@@ -1,3 +1,4 @@
+//Codigo para el chip And
 CHIP And {
     IN a, b, sel;
     OUT out;
