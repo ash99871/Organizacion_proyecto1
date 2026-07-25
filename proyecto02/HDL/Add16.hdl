@@ -1,0 +1,9 @@
+CHIP Add16 {
+    IN a[16], b[16];
+    OUT out[16];
+
+    PARTS:
+    // Sumamos los dos números de 16 bits usando 16 FullAdder, o sea, lo mismo que add16
+    Add16(a=in, b[0]=true, b[1..15]=false, out=out);
+
+}
