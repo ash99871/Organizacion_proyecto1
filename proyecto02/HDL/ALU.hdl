@@ -24,9 +24,23 @@ CHIP ALU {
     //f
     And16(a=xFinal, b=yFinal, out=union);
     Add16(a=xFinal, b=yFinal, out=sum);
-    Mux16(a=union, b=sum, sel=f, out=PreOut);
+    Mux16(a=union, b=sum, sel=f, out=preOut);
 
-    //negacion
-    Not16(in=PreOut, out=nof);
-    Mux16(a=PreOut, b=nof, sel=no, out=out);
+    //negacion y ng
+    Not16(in=preOut, out=nof);
+    Mux16(
+    a=preOut,
+    b=nof,
+    sel=no,
+    out=out,
+    out[15]=ng,
+    out[0..7]=low,
+    out[8..15]=high
+    );
+
+    //zr
+    Or8Way(in=low, out=left);
+    Or8Way(in=high, out=right);
+    Or(a=left, b=right, out=anyOne);
+    Not(in=anyOne, out=zr);
 }
