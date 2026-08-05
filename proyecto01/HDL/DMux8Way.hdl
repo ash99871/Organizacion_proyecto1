@@ -1,28 +1,13 @@
-// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/DMux8Way.hdl
-/**
- * 8-way demultiplexor:
- * [a, b, c, d, e, f, g, h] = [in, 0,  0,  0,  0,  0,  0,  0] if sel = 000
- *                            [0, in,  0,  0,  0,  0,  0,  0] if sel = 001
- *                            [0,  0, in,  0,  0,  0,  0,  0] if sel = 010
- *                            [0,  0,  0, in,  0,  0,  0,  0] if sel = 011
- *                            [0,  0,  0,  0, in,  0,  0,  0] if sel = 100
- *                            [0,  0,  0,  0,  0, in,  0,  0] if sel = 101
- *                            [0,  0,  0,  0,  0,  0, in,  0] if sel = 110
- *                            [0,  0,  0,  0,  0,  0,  0, in] if sel = 111
- */
+// Codigo para el chip DMux8Way
+
 CHIP DMux8Way {
     IN in, sel[3];
     OUT a, b, c, d, e, f, g, h;
 
     PARTS:
-    Dmux(in=in, sel=sel[1], a=x, b=y);
-    DMux(in=x, sel=sel[1], a=p, b=q);
-    DMux(in=y, sel=sel[1], a=r, b=s);
-    DMux(in=p, sel=sel[0], a=a, b=b);
-    DMux(in=q, sel=sel[0], a=c, b=d);
-    DMux(in=r, sel=sel[0], a=e, b=f);
-    DMux(in=s, sel=sel[0], a=g, b=h);
+    DMux4Way(in=in , sel=sel[1..2] , a=inWay0 , b=inWay1 , c=inWay2 , d=inWay3 );
+    DMux(in=inWay0 , sel=sel[0] , a=a , b=b );
+    DMux(in=inWay1 , sel=sel[0] , a=c , b=d );
+    DMux(in=inWay2 , sel=sel[0] , a=e , b=f );
+    DMux(in=inWay3 , sel=sel[0] , a=g , b=h );
 }

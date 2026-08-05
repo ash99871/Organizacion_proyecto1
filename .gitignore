@@ -1,3 +1,9 @@
 *.out
 *.class
 .DS_Store
+
+# Pruebas nand2tetris
+*.tst
+*.cmp
+*.out
+**/nand2tetris/
