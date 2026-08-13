@@ -1,0 +1,119 @@
+CHIP ALU {
+    IN  
+        x[16], y[16],  // 16-bit inputs        
+        zx, // zero the x input?
+        nx, // negate the x input?
+        zy, // zero the y input?
+        ny, // negate the y input?
+        f,  // compute (out = x + y) or (out = x & y)?
+        no; // negate the out output?
+    OUT 
+        out[16], // 16-bit output
+        zr,      // if (out == 0) equals 1, else 0
+        ng;      // if (out < 0)  equals 1, else 0
+
+    PARTS:
+    //  y y x
+    Mux16(a=x, b=false, sel=zx, out=xZeroed);
+    Not16(in=xZeroed, out=xNegated);
+    Mux16(a=y, b=false, sel=zy, out=yZeroed);
+    Not16(in=yZeroed, out=yNegated);
+    Mux16(a=xZeroed, b=xNegated, sel=nx, out=xFinal);
+    Mux16(a=yZeroed, b=yNegated, sel=ny, out=yFinal);
+
+    //  f 
+    And16(a=xFinal, b=yFinal, out=union);
+    Add16(a=xFinal, b=yFinal, out=sum);
+    Mux16(a=union, b=sum, sel=f, out=unionOrSum);
+
+    Not16(in=unionOrSum , out=notPreOutF );
+    Mux16(a=unionOrSum , b=notPreOutF , sel=no , out=preOutF );
+
+    //  EQ
+    Not16(in=x, out=xFinalNegated );
+    Not16(in=y, out=yFinalNegated );
+
+    And16(a=x , b=yFinalNegated , out=xAndNoty );
+    And16(a=y , b=xFinalNegated , out=yAndNotx );
+
+    Or16(a=xAndNoty , b=yAndNotx , out[0..7]=EQlow, out[8..15]=EQhigh );
+    Or8Way(in=EQlow , out=lowDiff );
+    Or8Way(in=EQhigh , out=highDiff );
+    Or(a=lowDiff , b=highDiff , out=hasDiff );
+
+    Mux16(a[0]=true, a[1..15]=false , b=false , sel=hasDiff , out=preOutEQ );
+
+    //  ABS 
+    Not16(in=x, out=xNot);
+    Add16(a=xNot, b[0]=true, b[1..15]=false, out=xNeg);
+    Mux16(a=x, b=xNeg, sel=x[15] , out=preOutAbs );
+
+    // XOR
+    Or16(a=xAndNotY, b=yAndNotX, out=preOutXOR);
+
+    //NAND
+    And16(a=x, b=y, out=preNAND);
+    Not16(in=preNAND, out=preOutNAND);
+
+    //NOR
+    Or16(a=x, b=y, out=xOrY);
+    Not16(in=xOrY, out=preOutNOR);
+
+    //  DECODER
+    Not(in=zx, out=notZx);
+    Not(in=nx, out=notNx);
+    Not(in=zy, out=notZy);
+    Not(in=ny, out=notNy);
+    Not(in=f,  out=notF);
+    Not(in=no, out=notNo);
+
+    //  CODIGO EQ = 101000
+    And(a=zx, b=notNx, out=eq1);
+    And(a=eq1, b=zy, out=eq2);
+    And(a=eq2, b=notNy, out=eq3);
+    And(a=eq3, b=notF, out=eq4);
+    And(a=eq4, b=notNo, out=isEQ);
+
+    //CODIGO ABS = 100010
+    And(a=zx, b=notNx, out=abs1);
+    And(a=abs1, b=notZy, out=abs2);
+    And(a=abs2, b=notNy, out=abs3);
+    And(a=abs3, b=f, out=abs4);
+    And(a=abs4, b=notNo, out=isABS); 
+
+    //CODIGO XOR = 010110
+    And(a=notZx, b=nx, out=xor1);
+    And(a=xor1, b=notZy, out=xor2);
+    And(a=xor2, b=ny, out=xor3);
+    And(a=xor3, b=f, out=xor4);
+    And(a=xor4, b=notNo, out=isXOR);   
+
+    //CODIGO NAND = 000001
+    And(a=notZx, b=notNx, out=nand1);
+    And(a=nand1, b=notZy, out=nand2);
+    And(a=nand2, b=notNy, out=nand3);
+    And(a=nand3, b=notF, out=nand4);
+    And(a=nand4, b=no, out=isNAND);
+
+    //CODIGO NOR = 110100
+    And(a=zx, b=nx, out=nor1);
+    And(a=nor1, b=notZy, out=nor2);
+    And(a=nor2, b=ny, out=nor3);
+    And(a=nor3, b=notF, out=nor4);
+    And(a=nor4, b=notNo, out=isNOR);
+
+    //  SELECCION DE OPERACION
+    Mux16(a=preOutF,      b=preOutEQ,   sel=isEQ,   out=preFinalEQ);
+    Mux16(a=preFinalEQ,   b=preOutAbs,  sel=isABS,  out=preFinalAbs);
+    Mux16(a=preFinalAbs,  b=preOutXOR,  sel=isXOR,  out=preFinalXOR);
+    Mux16(a=preFinalXOR,  b=preOutNAND, sel=isNAND, out=preFinalNAND);
+    Mux16(a=preFinalNAND, b=preOutNOR,  sel=isNOR,  out=preFinal);
+    
+
+    //  out, zr y ng
+    Mux16(a=preFinal , b=true , out=out, out[15]=ng, out[0..7]=low, out[8..15]=high );
+    Or8Way(in=low, out=left);
+    Or8Way(in=high, out=right);
+    Or(a=left, b=right, out=anyOne);
+    Not(in=anyOne, out=zr);
+}
