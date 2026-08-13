@@ -1,4 +1,4 @@
-CHIP ALU {
+CHIP ALU_Ext {
     IN  
         x[16], y[16],  // 16-bit inputs        
         zx, // zero the x input?
@@ -49,11 +49,7 @@ CHIP ALU {
     Mux16(a=x, b=xNeg, sel=x[15] , out=preOutAbs );
 
     // XOR
-    Or16(a=xAndNotY, b=yAndNotX, out=preOutXOR);
-
-    //NAND
-    And16(a=x, b=y, out=preNAND);
-    Not16(in=preNAND, out=preOutNAND);
+    Or16(a=xAndNoty, b=yAndNotx, out=preOutXOR);
 
     //NOR
     Or16(a=x, b=y, out=xOrY);
@@ -88,13 +84,6 @@ CHIP ALU {
     And(a=xor3, b=f, out=xor4);
     And(a=xor4, b=notNo, out=isXOR);   
 
-    //CODIGO NAND = 000001
-    And(a=notZx, b=notNx, out=nand1);
-    And(a=nand1, b=notZy, out=nand2);
-    And(a=nand2, b=notNy, out=nand3);
-    And(a=nand3, b=notF, out=nand4);
-    And(a=nand4, b=no, out=isNAND);
-
     //CODIGO NOR = 110100
     And(a=zx, b=nx, out=nor1);
     And(a=nor1, b=notZy, out=nor2);
@@ -106,10 +95,8 @@ CHIP ALU {
     Mux16(a=preOutF,      b=preOutEQ,   sel=isEQ,   out=preFinalEQ);
     Mux16(a=preFinalEQ,   b=preOutAbs,  sel=isABS,  out=preFinalAbs);
     Mux16(a=preFinalAbs,  b=preOutXOR,  sel=isXOR,  out=preFinalXOR);
-    Mux16(a=preFinalXOR,  b=preOutNAND, sel=isNAND, out=preFinalNAND);
-    Mux16(a=preFinalNAND, b=preOutNOR,  sel=isNOR,  out=preFinal);
+    Mux16(a=preFinalXOR, b=preOutNOR,  sel=isNOR,  out=preFinal);
     
-
     //  out, zr y ng
     Mux16(a=preFinal , b=true , out=out, out[15]=ng, out[0..7]=low, out[8..15]=high );
     Or8Way(in=low, out=left);
