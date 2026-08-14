@@ -1,0 +1,12 @@
+OPERACIONES EXTENDIDAS DE LA ALU:
+
+1. EQ: Se encarga de obtener, primeramente, la versión negada de las entradas x e y, con ello, hace un xor que revisa si los números coinciden bit a bit gracias a un and16, se supone que se debería obtener una salida de 16bits donde todos los bits sean 0. Por tanto, divide esta salida en low(primeros 7 bits) y high(siguientes 8 bits), para revisar en ellos, con un or8way, si alguna de las salidas es 1(si hay un número que difiere), luego se asigna el bit de control.
+
+2. ABS: Se recibe una única entrada x de 16bits, crea la negación de X y le suma 1. En caso de que el número de entrada sea negativo (el bit 15 sea 1), devuelve el resultado de la operación anterior, y si es positivo devuelve el número tal cual estaba.
+
+3. XOR: Funciona mediante un Or16 que evalúa sus casos verdaderos (x AND NOTy), (NOTx AND y).
+
+4. NAND: Al ser la negación del AND, hace exactamente eso, o sea, una conjunción(and16) entre las dos entradas y luego niega su salida(not16).
+
+5. NOR: Niega el Or, es decir, niega la salida del Or16 de las entradas.
+
