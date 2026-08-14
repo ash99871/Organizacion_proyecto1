@@ -1,5 +1,5 @@
 # Proyecto Integrador – Organización y Arquitectura de Computadores 
-## Estudiantes - Nombre: - Nombre: - Nombre: 
+## Estudiantes: Juan Manuel Agudelo - Samuel Quintero Quintero - Ashly Sofia Robayo 
 ## Descripción 
 Este repositorio contiene la solución al Proyecto Integrador del primer corte 
 del curso de Organización y Arquitectura de Computadores. 
