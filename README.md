@@ -23,10 +23,43 @@ Implementación de componentes secuenciales y memoria.
 La ALUExtendida conserva la interfaz de la ALU original de Nand2Tetris y 
 agrega cinco operaciones nuevas. 
 ### Operaciones soportadas - XOR - NAND - NOR - EQ - ABS --- 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Practica 2 - Construccion de la plataforma hack, Lenguaje Maquina , CPU y Computador
+
+## Estudiantes: Juan Manuel Agudelo - Samuel Quintero Quintero - Ashly Sofia Robayo 
+## Descripcion
+El repositorio actualizado para el segundo proyecto integrador para el curso
+de organizacion de compuradores, abarca los proyectos 4 y 5 de la plataforma respectiva del curso
+Nand2Tetris, incluye los archivos, documentacion y test respectivos de cada proyecto
+
+# Contenido
+## Proyecto 4 (lenguaje en Assembler)
+Implementacion de los programas en el ensamblador hack
+
+### Componentes - Fill - CopyBlock - Mult - SumN
+
+## Importantes
+
+### Mult.asm
+Su trabajo es Calcular el resultado de R0 * R1 para luego
+almacenar su resultado en R2 mediante un ciclo de sumas sucesivas
+
+### Fill.asm
+Va revisando continuamente el estado del teclado, rellenando toda
+la pantalla en negro cuando haya una tecla presionada, y en blanco cuando no la haya
+
+## Proyecto 5 (Adentro de la computadora)
+Implementacion en archivos HDL de los principales componentes del hack
+
+### Componentes - Memory - CPU - Computer
+
+
 # Estructura del Repositorio 
 ```text 
 proyecto01/ 
 proyecto02/ 
 proyecto03/ 
-alu_extendida/ 
+alu_extendida/
+proyecto04/
+proyecto05/
 README.md
