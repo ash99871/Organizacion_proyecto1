@@ -48,10 +48,27 @@ almacenar su resultado en R2 mediante un ciclo de sumas sucesivas
 Va revisando continuamente el estado del teclado, rellenando toda
 la pantalla en negro cuando haya una tecla presionada, y en blanco cuando no la haya
 
+## CopyBlock.asm
+Copia un bloque de datos desde el origen hasta la zona del destino, recorriendo punto A a punto B de forma dinamica
+
+## SumN.asm
+Calcula la suma de los primeros n numeros naturales y almacena este resultado en la memoria del dispositivo
+con el uso de un ciclo en el contador
+
 ## Proyecto 5 (Adentro de la computadora)
 Implementacion en archivos HDL de los principales componentes del hack
 
 ### Componentes - Memory - CPU - Computer
+
+## Importantes
+
+## Memory.hdl
+integra la RAM del sistema, la pantalla y el teclado. Memory se dirige por instrucciones a la hora de ejecutar el codigo por nand2tetris, de lo contrario se generara en bucle hasta presionar la tecla solicitada
+## CPU.hdl
+Este sistema implementa la unidad central de procesamiento del hack, la cual se encarga de decodificar, analizar y procesar
+instrucciones tipo A y tipo C
+## Computer.hdl
+Une la CPU y la memoria ROM para unir la computadora completa. Es quien se encarga de manteenr el codigo unido y funcional
 
 
 # Estructura del Repositorio 
@@ -61,5 +78,11 @@ proyecto02/
 proyecto03/ 
 alu_extendida/
 proyecto04/
+ DOCUMENTACION/
+ HDL/
+ TESTS/
 proyecto05/
+ DOCUMENTACION/
+ HDL/
+ TESTS/
 README.md
