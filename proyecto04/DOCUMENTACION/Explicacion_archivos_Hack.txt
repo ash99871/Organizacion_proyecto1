@@ -1,0 +1,199 @@
+EXPLICACIÓN DE LOS ARCHIVOS HACK ASSEMBLY
+
+Este documento explica qué hace cada archivo y cómo funciona, basándose en el código entregado.
+
+
+1. CopyBlock.asm
+
+Este programa copia un bloque de datos desde una dirección de memoria de origen hacia una dirección de destino.
+
+El programa utiliza:
+- RAM[0]: dirección inicial del bloque de origen.
+- RAM[1]: dirección inicial del bloque de destino.
+- RAM[2]: cantidad de datos que se deben copiar.
+- i: variable auxiliar que indica la posición actual dentro del bloque.
+- temp: variable auxiliar para guardar temporalmente la dirección de destino.
+
+Primero se inicializa i en 0.
+
+Después comienza el ciclo LOOP. En cada repetición compara i con RAM[2].
+Si i es igual a RAM[2], significa que ya se copiaron todos los datos y salta a END.
+
+Para obtener la posición de destino, toma RAM[1] y le suma i. Esa dirección se guarda temporalmente en temp.
+
+Luego toma RAM[0], le suma i y accede a esa posición de memoria. El dato encontrado se coloca en D.
+
+Finalmente, utiliza la dirección guardada en temp y escribe allí el dato obtenido del origen.
+
+Después aumenta i en 1 y vuelve a LOOP.
+
+En forma general, realiza:
+
+destino[i] = origen[i]
+
+hasta copiar la cantidad indicada por RAM[2].
+
+En el código se observa la comparación que detiene el ciclo cuando i alcanza la cantidad indicada, y posteriormente se calcula la dirección de destino sumando i a RAM[1].
+
+
+
+2. Fill.asm
+Este programa llena la pantalla con un mismo color dependiendo de si se está presionando una tecla.
+
+- Si no hay una tecla presionada, pinta la pantalla de blanco.
+- Si hay una tecla presionada, pinta la pantalla de negro.
+
+Utiliza:
+- SCREEN: dirección inicial de la memoria de pantalla.
+- KBD: dirección de memoria asociada al teclado.
+- addr: dirección actual de la pantalla que se está pintando.
+- color: valor que representa el color que se escribirá.
+
+El programa comienza en LEER.
+
+Primero guarda en addr la dirección inicial de SCREEN. Esto permite comenzar a escribir desde el primer registro de memoria correspondiente a la pantalla.
+
+Después consulta KBD.
+
+Si KBD contiene un valor diferente de cero, significa que hay una tecla presionada y salta a NEGRO.
+
+En NEGRO se asigna -1 a color. En Hack, escribir -1 equivale a tener todos los bits en 1, lo que representa el color negro en la pantalla.
+
+Si KBD es cero, el programa continúa hacia BLANCO. Allí asigna 0 a color, que representa el blanco.
+
+Luego ambos caminos llegan a PINTAR.
+
+En PINTAR:
+1. Se obtiene el valor de color.
+2. Se utiliza addr como dirección de memoria.
+3. Se escribe el color en esa posición.
+4. Se incrementa addr para pasar a la siguiente posición de pantalla.
+5. Se compara la dirección actual con KBD para controlar hasta dónde continúa el proceso.
+
+Cuando termina de recorrer la zona de pantalla, vuelve a LEER y vuelve a comprobar el teclado.
+
+Por lo tanto, el comportamiento general es:
+
+Tecla presionada -> pantalla negra.
+Sin tecla -> pantalla blanca.
+
+El código comprueba el teclado y selecciona entre las rutinas NEGRO y BLANCO, que establecen el valor de color antes de entrar en PINTAR.
+
+
+
+3. Mult.asm
+Este programa realiza una multiplicación mediante sumas repetidas.
+
+Los valores utilizados son:
+- RAM[0]: primer número.
+- RAM[1]: segundo número.
+- RAM[2]: resultado de la multiplicación.
+- i: variable auxiliar que controla las repeticiones.
+
+El resultado queda almacenado en RAM[2].
+
+Primero coloca 0 en RAM[2], porque allí se va acumulando el resultado.
+
+Después copia RAM[0] en i.
+
+El programa tiene dos caminos:
+
+A) Si i es positivo o cero:
+En LOOP_POS se revisa si i ya llegó a 0.
+Si i es 0, termina.
+
+Mientras i sea diferente de 0:
+- toma RAM[1],
+- lo suma a RAM[2],
+- disminuye i en 1.
+
+Esto equivale a:
+
+RAM[2] = RAM[2] + RAM[1]
+
+repetido tantas veces como indique RAM[0].
+
+B) Si i es negativo:
+En LOOP_NEG también se revisa si i llegó a 0.
+
+Mientras i sea diferente de 0:
+- toma RAM[1],
+- obtiene su valor negativo,
+- lo suma a RAM[2],
+- aumenta i en 1.
+
+Esto permite manejar un primer operando negativo mediante sumas del valor negativo del segundo operando.
+
+La estructura principal es, por tanto, una multiplicación por sumas repetidas.
+
+Ejemplo conceptual:
+
+Si RAM[0] = 3 y RAM[1] = 5:
+
+RAM[2] = 0
+i = 3
+
+Primera repetición: RAM[2] = 5, i = 2
+Segunda repetición: RAM[2] = 10, i = 1
+Tercera repetición: RAM[2] = 15, i = 0
+
+Resultado: RAM[2] = 15.
+
+El código separa explícitamente el caso positivo del negativo mediante LOOP_POS y LOOP_NEG.
+
+
+
+4. SumN.asm
+Este programa calcula la suma de los números enteros desde 1 hasta N.
+
+Utiliza:
+- RAM[0]: valor de N.
+- RAM[1]: resultado de la suma.
+- i: contador.
+
+El resultado final queda en RAM[1].
+Primero inicializa:
+i = 0
+sum = 0
+
+Después entra al ciclo LOOP.
+
+En cada repetición compara i con RAM[0].
+Si son iguales, significa que ya llegó hasta N y termina.
+
+Si todavía no ha llegado a N:
+1. Incrementa i en 1.
+2. Obtiene el nuevo valor de i.
+3. Lo suma a RAM[1].
+4. Regresa al ciclo.
+
+Por ejemplo, si RAM[0] = 4:
+
+Inicio:
+i = 0
+sum = 0
+
+Primera vuelta:
+i = 1
+sum = 1
+
+Segunda vuelta:
+i = 2
+sum = 3
+
+Tercera vuelta:
+i = 3
+sum = 6
+
+Cuarta vuelta:
+i = 4
+sum = 10
+
+Después de esto, como i == RAM[0], el programa termina.
+
+Por lo tanto:
+
+RAM[1] = 1 + 2 + 3 + ... + N
+
+El ciclo controla la condición de finalización comparando el contador i con el valor guardado en RAM[0].
+
